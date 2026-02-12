@@ -20,6 +20,10 @@ var is_warping: bool = false
 var warp_progress: float = 0.0
 var fire_cooldown: float = 0.0
 
+# Combat state — shooting pauses sync
+var combat_timer: float = 0.0
+const COMBAT_COOLDOWN: float = 1.5  # seconds after last shot before sync resumes
+
 # Edge jump state
 var is_edge_jumping: bool = false
 var edge_jump_direction: String = ""
@@ -40,7 +44,9 @@ var touch_move_vector: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
 	_apply_upgrades()
-	health = max_health
+	health = int(max_health * GameState.spawn_health_percent)
+	health = maxi(health, 1)
+	GameState.spawn_health_percent = 1.0  # Reset after use
 
 
 func _apply_upgrades() -> void:
@@ -51,7 +57,14 @@ func _apply_upgrades() -> void:
 		warp_charge_time = maxf(2.0, warp_charge_time + upgrades["warp_charge_time"])
 
 
+var is_in_combat: bool:
+	get:
+		return combat_timer > 0.0
+
+
 func _physics_process(delta: float) -> void:
+	if combat_timer > 0.0:
+		combat_timer -= delta
 	_handle_movement(delta)
 	_handle_shooting(delta)
 	_handle_warp(delta)
@@ -159,16 +172,38 @@ func _handle_shooting(delta: float) -> void:
 	if Input.is_action_pressed("shoot"):
 		_fire_projectile()
 		fire_cooldown = fire_rate
+		combat_timer = COMBAT_COOLDOWN
 
 
 func _fire_projectile() -> void:
 	if projectile_scene == null:
 		return
+	var aim_dir: Vector2 = Vector2.RIGHT.rotated(rotation)
+	# Auto-aim: target nearest enemy if any are alive
+	var target := _get_nearest_enemy()
+	if target:
+		aim_dir = (target.global_position - global_position).normalized()
 	var projectile := projectile_scene.instantiate()
 	projectile.global_position = global_position
-	projectile.rotation = rotation
-	projectile.direction = Vector2.RIGHT.rotated(rotation)
+	projectile.rotation = aim_dir.angle()
+	projectile.direction = aim_dir
 	get_tree().current_scene.add_child(projectile)
+
+
+func _get_nearest_enemy() -> Node2D:
+	var enemies := get_tree().get_nodes_in_group("enemies")
+	var nearest: Node2D = null
+	var nearest_dist: float = INF
+	for enemy in enemies:
+		if not is_instance_valid(enemy) or not enemy is Node2D:
+			continue
+		if enemy.get("state") == "DEAD":
+			continue
+		var dist: float = global_position.distance_to(enemy.global_position)
+		if dist < nearest_dist:
+			nearest_dist = dist
+			nearest = enemy
+	return nearest
 
 
 func _handle_warp(delta: float) -> void:

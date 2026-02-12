@@ -12,6 +12,9 @@ var is_home_sector: bool = false
 @onready var anomaly_node: Node2D = $Anomaly
 @onready var hud: CanvasLayer = $HUD
 
+var wave_spawner: Node = null
+
+
 # Entry spawn positions — "north" means "I came from the north" → spawn at top
 const SPAWN_POSITIONS: Dictionary = {
 	"north": Vector2(640, 40),    # Came from north → appear at top
@@ -32,6 +35,7 @@ func _ready() -> void:
 
 	_setup_anomaly()
 	_setup_home_station()
+	_setup_threats()
 	_position_ship()
 	_connect_signals()
 
@@ -75,6 +79,40 @@ func _setup_home_station() -> void:
 	var bg := $Background as ColorRect
 	if bg:
 		bg.color = Color(0.03, 0.03, 0.06, 1)
+
+
+func _setup_threats() -> void:
+	if is_home_sector:
+		return
+	if has_anomaly:
+		# Anomaly sectors: escalating waves (only if not already synced/depleted)
+		if sector_data.get("player_synced", false) or sector_data.get("depleted", false):
+			return
+		var spawner_script := preload("res://systems/wave_spawner.gd")
+		wave_spawner = Node.new()
+		wave_spawner.set_script(spawner_script)
+		wave_spawner.signal_strength = sector_data.get("signal_strength", 0.5)
+		wave_spawner.sector_id = sector_id
+		add_child(wave_spawner)
+		if GameState.sectors.has(sector_id):
+			GameState.sectors[sector_id]["threat_index"] = sector_data.get("signal_strength", 0.5)
+	else:
+		# Empty sectors: small fixed patrol group
+		_spawn_patrol_group()
+
+
+func _spawn_patrol_group() -> void:
+	var drone_scene: PackedScene = preload("res://scenes/enemies/enemy_drone.tscn")
+	var gunner_scene: PackedScene = preload("res://scenes/enemies/enemy_gunner.tscn")
+	var count: int = randi_range(2, 4)
+	for i in range(count):
+		var enemy: CharacterBody2D
+		if randf() < 0.7:
+			enemy = drone_scene.instantiate()
+		else:
+			enemy = gunner_scene.instantiate()
+		enemy.global_position = Vector2(randf_range(100, 1180), randf_range(100, 620))
+		add_child(enemy)
 
 
 func _position_ship() -> void:
@@ -122,6 +160,8 @@ func _update_hud() -> void:
 		hud.update_orbit_tier(anomaly_node.get_orbit_tier_for_player())
 	elif not has_anomaly and hud.has_method("update_orbit_tier"):
 		hud.update_orbit_tier("none")
+	if wave_spawner and hud.has_method("update_threat_info"):
+		hud.update_threat_info(wave_spawner.get_wave_number(), wave_spawner.get_active_enemy_count())
 
 
 func _on_warp_completed() -> void:
@@ -133,8 +173,13 @@ func _on_warp_completed() -> void:
 
 
 func _on_ship_destroyed() -> void:
-	GameState.exit_sector()
-	get_tree().change_scene_to_file("res://scenes/galaxy_map.tscn")
+	# Respawn at home base with damaged hull
+	GameState.warp_home()
+	GameState.pending_sector_data = GameState.sectors[GameState.home_sector_id]
+	GameState.pending_sector_id = GameState.home_sector_id
+	GameState.pending_entry_direction = ""
+	GameState.spawn_health_percent = 0.2
+	get_tree().change_scene_to_file("res://scenes/sector.tscn")
 
 
 func _on_edge_jump_completed(direction: String) -> void:
@@ -190,3 +235,5 @@ func _on_warp_charge_changed(progress: float) -> void:
 func _on_anomaly_synced(family: String) -> void:
 	if hud and hud.has_method("show_relic_acquired"):
 		hud.show_relic_acquired(family)
+	if wave_spawner:
+		wave_spawner.sync_complete = true

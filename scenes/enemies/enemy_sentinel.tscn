@@ -1,0 +1,30 @@
+[gd_scene load_steps=4 format=3 uid="uid://sentinel001"]
+
+[ext_resource type="Script" path="res://scenes/enemies/enemy_sentinel.gd" id="1_sentinel"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_body"]
+radius = 18.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hitbox"]
+radius = 20.0
+
+[node name="EnemySentinel" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("1_sentinel")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_body")
+
+[node name="Body" type="Polygon2D" parent="."]
+color = Color(0.6, 0.15, 0.8, 1)
+polygon = PackedVector2Array(18, 0, 12.7, -12.7, 0, -18, -12.7, -12.7, -18, 0, -12.7, 12.7, 0, 18, 12.7, 12.7)
+
+[node name="Hitbox" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 1
+
+[node name="HitboxShape" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("CircleShape2D_hitbox")
+
+[connection signal="body_entered" from="Hitbox" to="." method="_on_hitbox_body_entered"]

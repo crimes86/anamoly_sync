@@ -26,6 +26,14 @@ offset_right = 300.0
 offset_bottom = 96.0
 text = "FUEL 100/100"
 
+[node name="ThreatLabel" type="Label" parent="."]
+offset_left = 16.0
+offset_top = 100.0
+offset_right = 300.0
+offset_bottom = 124.0
+text = ""
+visible = false
+
 [node name="SyncBar" type="ProgressBar" parent="."]
 offset_left = 16.0
 anchors_preset = 2

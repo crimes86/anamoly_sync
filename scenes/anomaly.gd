@@ -106,7 +106,10 @@ func _physics_process(_delta: float) -> void:
 		_apply_orbit(ship, distance, tier)
 
 	# Update sync (handles both syncing and de-sync)
+	# Shooting pauses sync — progress only advances when not in combat
 	if not is_depleted and not player_already_synced:
+		if ship.get("is_in_combat"):
+			return
 		var ship_mod: float = GameState.ship_upgrades.get("sync_rate", 1.0)
 		attunement.update_sync(get_physics_process_delta_time(), distance, ship_mod)
 

@@ -7,6 +7,7 @@ const HEALTH_REGEN_RATE: float = 20.0  # HP per second
 const REGEN_RADIUS: float = 250.0  # must be within this range to regen
 
 var pulse_time: float = 0.0
+var _health_regen_accum: float = 0.0
 
 
 func _process(delta: float) -> void:
@@ -31,8 +32,14 @@ func _regen_fuel(delta: float) -> void:
 
 func _regen_health(delta: float, ship: CharacterBody2D) -> void:
 	if ship.health < ship.max_health:
-		ship.health = mini(ship.max_health, ship.health + int(HEALTH_REGEN_RATE * delta))
-		ship.health_changed.emit(ship.health, ship.max_health)
+		_health_regen_accum += HEALTH_REGEN_RATE * delta
+		if _health_regen_accum >= 1.0:
+			var heal: int = int(_health_regen_accum)
+			_health_regen_accum -= heal
+			ship.health = mini(ship.max_health, ship.health + heal)
+			ship.health_changed.emit(ship.health, ship.max_health)
+	else:
+		_health_regen_accum = 0.0
 
 
 func _get_player_ship() -> CharacterBody2D:

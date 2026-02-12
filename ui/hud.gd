@@ -15,6 +15,7 @@ extends CanvasLayer
 @onready var codex_btn: Button = $CodexBtn
 @onready var market_btn: Button = $MarketBtn
 @onready var warp_btn: Button = $WarpBtn
+@onready var threat_label: Label = $ThreatLabel
 
 var relic_popup_timer: float = 0.0
 
@@ -129,6 +130,15 @@ func _update_credits() -> void:
 func _update_fuel() -> void:
 	if fuel_label:
 		fuel_label.text = "FUEL %.0f/%.0f" % [GameState.fuel, GameState.max_fuel]
+
+
+func update_threat_info(wave: int, enemies: int) -> void:
+	if threat_label:
+		if enemies > 0 or wave > 0:
+			threat_label.text = "WAVE %d | %d HOSTILES" % [wave, enemies]
+			threat_label.visible = true
+		else:
+			threat_label.visible = false
 
 
 func _on_credits_changed(_new_total: int) -> void:

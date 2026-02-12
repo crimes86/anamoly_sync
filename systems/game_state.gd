@@ -32,6 +32,7 @@ var explored_sectors: Array[String] = []
 var pending_sector_data: Dictionary = {}
 var pending_sector_id: String = ""
 var pending_entry_direction: String = ""  # "north", "south", "east", "west" — where player enters from
+var spawn_health_percent: float = 1.0  # 0.0-1.0, reset after use
 
 # Sector grid and connections
 const GALAXY_WIDTH: int = 8
