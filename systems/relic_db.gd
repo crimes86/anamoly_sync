@@ -73,6 +73,50 @@ func add_to_vault(relic: Dictionary) -> bool:
 	return true
 
 
+func count_relic(relic_id: String) -> int:
+	## Count how many of a specific relic the player owns.
+	var count: int = 0
+	for relic in vault:
+		if relic.get("relic_id", "") == relic_id:
+			count += 1
+	return count
+
+
+func get_vault_by_family(family: String) -> Array[Dictionary]:
+	## Filter vault by family. Empty string returns all.
+	var results: Array[Dictionary] = []
+	for relic in vault:
+		if family == "" or relic.get("family", "") == family:
+			results.append(relic)
+	return results
+
+
+func consume_relics(relic_id: String, count: int) -> bool:
+	## Remove 'count' relics with matching relic_id from vault.
+	## Returns false if insufficient (no partial consumption).
+	if count_relic(relic_id) < count:
+		return false
+	var removed: int = 0
+	for i in range(vault.size() - 1, -1, -1):
+		if vault[i].get("relic_id", "") == relic_id:
+			vault.remove_at(i)
+			removed += 1
+			if removed >= count:
+				break
+	vault_changed.emit()
+	return true
+
+
+func remove_from_vault(index: int) -> Dictionary:
+	## Remove a relic at the given vault index. Returns the removed relic.
+	if index < 0 or index >= vault.size():
+		return {}
+	var relic: Dictionary = vault[index]
+	vault.remove_at(index)
+	vault_changed.emit()
+	return relic
+
+
 func get_vault_data() -> Array:
 	return vault.duplicate()
 

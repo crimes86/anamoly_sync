@@ -96,7 +96,7 @@ offset_left = 0.0
 offset_top = -20.0
 offset_right = 100.0
 offset_bottom = 0.0
-text = "WARP [Q]"
+text = ""
 
 [node name="EdgeJumpBar" type="ProgressBar" parent="."]
 anchors_preset = 5
@@ -150,3 +150,50 @@ offset_bottom = 130.0
 horizontal_alignment = 1
 text = "RELIC ACQUIRED"
 visible = false
+
+[node name="MapBtn" type="Button" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+grow_horizontal = 0
+offset_left = -240.0
+offset_top = 44.0
+offset_right = -168.0
+offset_bottom = 76.0
+text = "MAP"
+
+[node name="CodexBtn" type="Button" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+grow_horizontal = 0
+offset_left = -162.0
+offset_top = 44.0
+offset_right = -90.0
+offset_bottom = 76.0
+text = "CODEX"
+
+[node name="MarketBtn" type="Button" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+grow_horizontal = 0
+offset_left = -84.0
+offset_top = 44.0
+offset_right = -12.0
+offset_bottom = 76.0
+text = "MARKET"
+
+[node name="WarpBtn" type="Button" parent="."]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 0
+offset_left = -300.0
+offset_top = -108.0
+offset_right = -216.0
+offset_bottom = -84.0
+text = "WARP"

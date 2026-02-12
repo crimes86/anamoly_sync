@@ -1,10 +1,12 @@
-[gd_scene load_steps=6 format=3 uid="uid://sector001"]
+[gd_scene load_steps=8 format=3 uid="uid://sector001"]
 
 [ext_resource type="Script" path="res://scenes/sector.gd" id="1_sector"]
 [ext_resource type="PackedScene" uid="uid://ship001" path="res://scenes/ship.tscn" id="2_ship"]
 [ext_resource type="PackedScene" uid="uid://anomaly001" path="res://scenes/anomaly.tscn" id="3_anomaly"]
 [ext_resource type="PackedScene" uid="uid://hud001" path="res://ui/hud.tscn" id="4_hud"]
 [ext_resource type="PackedScene" uid="uid://mapoverlay001" path="res://ui/map_overlay.tscn" id="5_map"]
+[ext_resource type="PackedScene" uid="uid://codex001" path="res://ui/codex_overlay.tscn" id="6_codex"]
+[ext_resource type="PackedScene" uid="uid://relay001" path="res://ui/relay_market.tscn" id="7_market"]
 
 [node name="Sector" type="Node2D"]
 script = ExtResource("1_sector")
@@ -23,3 +25,7 @@ position = Vector2(200, 360)
 [node name="HUD" parent="." instance=ExtResource("4_hud")]
 
 [node name="MapOverlay" parent="." instance=ExtResource("5_map")]
+
+[node name="CodexOverlay" parent="." instance=ExtResource("6_codex")]
+
+[node name="RelayMarket" parent="." instance=ExtResource("7_market")]

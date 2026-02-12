@@ -12,6 +12,8 @@ enum Source {
 	RELAY_CONTRIBUTION,
 	RELIC_DEMAND_SPIKE,
 	RECIPE_CRAFTING,
+	RELIC_SCRAP,
+	RELAY_PURCHASE,
 }
 
 var source_names: Dictionary = {
@@ -19,6 +21,8 @@ var source_names: Dictionary = {
 	Source.RELAY_CONTRIBUTION: "Relay Contribution",
 	Source.RELIC_DEMAND_SPIKE: "Demand Spike",
 	Source.RECIPE_CRAFTING: "Recipe Crafting",
+	Source.RELIC_SCRAP: "Relic Scrap",
+	Source.RELAY_PURCHASE: "Relay Purchase",
 }
 
 

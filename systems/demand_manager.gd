@@ -4,6 +4,7 @@ extends Node
 
 signal spotlight_changed(family: String, multiplier: float)
 signal demand_updated()
+signal recipe_crafted(recipe_id: String, result: Dictionary)
 
 # Current spotlight family and its multiplier
 var active_spotlight: String = ""
@@ -17,6 +18,9 @@ var recipes: Dictionary = {}
 
 # Meta config loaded from data/meta_config.json
 var meta_config: Dictionary = {}
+
+# Recipes the player has already crafted (one-time only)
+var crafted_recipes: Array[String] = []
 
 
 func _ready() -> void:
@@ -83,3 +87,66 @@ func get_effective_value(relic: Dictionary) -> float:
 		demand *= spotlight_multiplier
 
 	return rarity_weight * demand * relic.get("base_power", 1)
+
+
+func rotate_spotlight() -> void:
+	## Cycle spotlight to the next family.
+	var families: Array = meta_config.get("families", [])
+	if families.is_empty():
+		return
+	var current_index: int = families.find(active_spotlight)
+	var next_index: int = (current_index + 1) % families.size()
+	set_spotlight(families[next_index], spotlight_multiplier)
+
+
+func can_craft(recipe_id: String) -> bool:
+	## Check if the player owns all ingredients for a recipe and hasn't crafted it yet.
+	if not recipes.has(recipe_id):
+		return false
+	if recipe_id in crafted_recipes:
+		return false
+	var ingredients: Array = recipes[recipe_id].get("ingredients", [])
+	for ingredient in ingredients:
+		var relic_id: String = ingredient.get("relic_id", "")
+		var needed: int = ingredient.get("quantity", 0)
+		if RelicDB.count_relic(relic_id) < needed:
+			return false
+	return true
+
+
+func is_crafted(recipe_id: String) -> bool:
+	return recipe_id in crafted_recipes
+
+
+func craft_recipe(recipe_id: String) -> bool:
+	## Require ingredients in vault but don't consume them. One-time per recipe.
+	if not can_craft(recipe_id):
+		return false
+	var recipe: Dictionary = recipes[recipe_id]
+
+	# Mark as crafted (one-time)
+	crafted_recipes.append(recipe_id)
+
+	# Apply result
+	var result: Dictionary = recipe.get("result", {})
+	_apply_craft_result(result)
+	recipe_crafted.emit(recipe_id, result)
+	return true
+
+
+func _apply_craft_result(result: Dictionary) -> void:
+	var result_type: String = result.get("type", "")
+	match result_type:
+		"ship_modifier":
+			var stat: String = result.get("stat", "")
+			var value = result.get("value", 0)
+			if stat == "sync_rate":
+				# Multiplicative: chain multiply
+				var current: float = GameState.ship_upgrades.get(stat, 1.0)
+				GameState.ship_upgrades[stat] = current * float(value)
+			else:
+				# Additive: accumulate (max_health, warp_charge_time)
+				var current: float = GameState.ship_upgrades.get(stat, 0.0)
+				GameState.ship_upgrades[stat] = current + float(value)
+		"vault_capacity":
+			GameState.vault_capacity += int(result.get("value", 0))

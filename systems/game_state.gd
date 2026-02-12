@@ -46,12 +46,26 @@ var connections: Dictionary = {}
 # Anomaly families
 const FAMILIES: Array[String] = ["FRACTAL", "VOID", "PULSE", "DRIFT", "ECHO"]
 
+# Family color palette
+const FAMILY_COLORS: Dictionary = {
+	"FRACTAL": Color(0.2, 0.9, 0.6),   # Teal-green
+	"VOID": Color(0.6, 0.15, 0.8),      # Deep purple
+	"PULSE": Color(1.0, 0.45, 0.15),    # Orange
+	"DRIFT": Color(0.3, 0.6, 1.0),      # Sky blue
+	"ECHO": Color(0.95, 0.85, 0.2),     # Gold-yellow
+}
+
+static func get_family_color(family: String) -> Color:
+	return FAMILY_COLORS.get(family, Color(0.5, 0.5, 0.5))
+
 # Jump cooldown
 var jump_cooldown: float = 0.0
 const JUMP_COOLDOWN_DURATION: float = 2.0  # seconds after arriving before you can edge-jump again
 
 # UI state persisted across scene changes
 var map_overlay_open: bool = false
+var codex_open: bool = false
+var relay_market_open: bool = false
 
 
 func _ready() -> void:
@@ -256,6 +270,7 @@ func save_game() -> Dictionary:
 		"fuel": fuel,
 		"player_map_position": {"x": player_map_position.x, "y": player_map_position.y},
 		"vault": RelicDB.get_vault_data(),
+		"crafted_recipes": DemandManager.crafted_recipes,
 	}
 
 
@@ -270,3 +285,5 @@ func load_game(data: Dictionary) -> void:
 	player_map_position = Vector2i(pos["x"], pos["y"])
 	if data.has("vault"):
 		RelicDB.load_vault_data(data["vault"])
+	if data.has("crafted_recipes"):
+		DemandManager.crafted_recipes.assign(data["crafted_recipes"])

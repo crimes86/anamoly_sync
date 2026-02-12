@@ -9,9 +9,9 @@ script = ExtResource("1_overlay")
 
 [node name="Panel" type="Control" parent="."]
 anchors_preset = 0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 540.0
-offset_bottom = 380.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 700.0
+offset_bottom = 400.0
 visible = false
 script = ExtResource("2_panel")

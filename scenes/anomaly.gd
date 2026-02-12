@@ -20,12 +20,17 @@ var sector_id: String = ""
 func _ready() -> void:
 	_load_persisted_state()
 	_setup_attunement()
+	_apply_family_color()
 
 
 func _load_persisted_state() -> void:
 	sector_id = GameState.pending_sector_id
 	if GameState.sectors.has(sector_id):
 		var data: Dictionary = GameState.sectors[sector_id]
+		anomaly_family = data.get("anomaly_family", anomaly_family)
+		signal_strength = data.get("signal_strength", signal_strength)
+		stability = data.get("stability", stability)
+		sync_pool = data.get("sync_pool", sync_pool)
 		syncs_remaining = data.get("syncs_remaining", sync_pool)
 		is_depleted = data.get("depleted", false)
 		player_already_synced = data.get("player_synced", false)
@@ -51,6 +56,19 @@ func _setup_attunement() -> void:
 	if player_already_synced or is_depleted:
 		attunement.sync_complete = true
 		attunement.sync_progress = 1.0
+
+
+func _apply_family_color() -> void:
+	var col: Color = GameState.get_family_color(anomaly_family)
+	var core_visual := get_node_or_null("CoreVisual") as Polygon2D
+	if core_visual:
+		core_visual.color = Color(col.r, col.g, col.b, 0.9)
+	var mid_ring := get_node_or_null("MidRing") as Polygon2D
+	if mid_ring:
+		mid_ring.color = Color(col.r, col.g, col.b, 0.15)
+	var outer_ring := get_node_or_null("OuterRing") as Polygon2D
+	if outer_ring:
+		outer_ring.color = Color(col.r, col.g, col.b, 0.06)
 
 
 # Orbital pull settings per tier
@@ -89,7 +107,8 @@ func _physics_process(_delta: float) -> void:
 
 	# Update sync (handles both syncing and de-sync)
 	if not is_depleted and not player_already_synced:
-		attunement.update_sync(get_physics_process_delta_time(), distance)
+		var ship_mod: float = GameState.ship_upgrades.get("sync_rate", 1.0)
+		attunement.update_sync(get_physics_process_delta_time(), distance, ship_mod)
 
 
 func _apply_orbit(ship: CharacterBody2D, distance: float, tier: String) -> void:

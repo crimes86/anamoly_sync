@@ -39,7 +39,16 @@ var touch_move_vector: Vector2 = Vector2.ZERO
 
 
 func _ready() -> void:
+	_apply_upgrades()
 	health = max_health
+
+
+func _apply_upgrades() -> void:
+	var upgrades: Dictionary = GameState.ship_upgrades
+	if upgrades.has("max_health"):
+		max_health += int(upgrades["max_health"])
+	if upgrades.has("warp_charge_time"):
+		warp_charge_time = maxf(2.0, warp_charge_time + upgrades["warp_charge_time"])
 
 
 func _physics_process(delta: float) -> void:
@@ -49,7 +58,7 @@ func _physics_process(delta: float) -> void:
 	_check_edge_jump(delta)
 
 
-func _handle_movement(_delta: float) -> void:
+func _handle_movement(delta: float) -> void:
 	var input_vec := Vector2.ZERO
 
 	# Keyboard input
@@ -78,9 +87,10 @@ func _handle_movement(_delta: float) -> void:
 	global_position.x = clampf(global_position.x, SECTOR_BOUNDS.position.x, SECTOR_BOUNDS.end.x)
 	global_position.y = clampf(global_position.y, SECTOR_BOUNDS.position.y, SECTOR_BOUNDS.end.y)
 
-	# Rotate ship to face movement direction
-	if velocity.length() > 10.0:
-		rotation = velocity.angle()
+	# Rotate ship to face movement direction — smooth interpolation prevents jitter in orbit
+	if velocity.length() > 30.0:
+		var target_angle: float = velocity.angle()
+		rotation = lerp_angle(rotation, target_angle, 8.0 * delta)
 
 
 func _check_edge_jump(delta: float) -> void:

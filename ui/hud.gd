@@ -11,6 +11,10 @@ extends CanvasLayer
 @onready var relic_popup: Label = $RelicPopup
 @onready var edge_jump_bar: ProgressBar = $EdgeJumpBar
 @onready var edge_jump_label: Label = $EdgeJumpLabel
+@onready var map_btn: Button = $MapBtn
+@onready var codex_btn: Button = $CodexBtn
+@onready var market_btn: Button = $MarketBtn
+@onready var warp_btn: Button = $WarpBtn
 
 var relic_popup_timer: float = 0.0
 
@@ -26,6 +30,15 @@ func _ready() -> void:
 	_update_fuel()
 	GameState.credits_changed.connect(_on_credits_changed)
 	GameState.fuel_changed.connect(_on_fuel_changed)
+	if map_btn:
+		map_btn.pressed.connect(_on_map_pressed)
+	if codex_btn:
+		codex_btn.pressed.connect(_on_codex_pressed)
+	if market_btn:
+		market_btn.pressed.connect(_on_market_pressed)
+	if warp_btn:
+		warp_btn.button_down.connect(_on_warp_btn_down)
+		warp_btn.button_up.connect(_on_warp_btn_up)
 
 
 func _process(delta: float) -> void:
@@ -44,6 +57,9 @@ func update_health(current: int, max_hp: int) -> void:
 	if health_bar:
 		health_bar.max_value = max_hp
 		health_bar.value = current
+		var hp_label: Label = health_bar.get_node_or_null("HealthLabel")
+		if hp_label:
+			hp_label.text = "HULL %d/%d" % [current, max_hp]
 
 
 func update_warp_bar(progress: float) -> void:
@@ -121,3 +137,39 @@ func _on_credits_changed(_new_total: int) -> void:
 
 func _on_fuel_changed(_current: float, _max_fuel: float) -> void:
 	_update_fuel()
+
+
+func _on_map_pressed() -> void:
+	var action := InputEventAction.new()
+	action.action = "toggle_map"
+	action.pressed = true
+	Input.parse_input_event(action)
+
+
+func _on_codex_pressed() -> void:
+	var action := InputEventAction.new()
+	action.action = "toggle_codex"
+	action.pressed = true
+	Input.parse_input_event(action)
+
+
+func _on_market_pressed() -> void:
+	var action := InputEventAction.new()
+	action.action = "toggle_market"
+	action.pressed = true
+	Input.parse_input_event(action)
+
+
+func _on_warp_btn_down() -> void:
+	var action := InputEventAction.new()
+	action.action = "warp_out"
+	action.pressed = true
+	action.strength = 1.0
+	Input.parse_input_event(action)
+
+
+func _on_warp_btn_up() -> void:
+	var action := InputEventAction.new()
+	action.action = "warp_out"
+	action.pressed = false
+	Input.parse_input_event(action)

@@ -76,11 +76,14 @@ func _draw() -> void:
 	# "HOME BASE" label
 	draw_string(ThemeDB.fallback_font, Vector2(-38, 58), "HOME BASE", HORIZONTAL_ALIGNMENT_CENTER, 80, 12, Color(0.7, 0.7, 0.8, 0.6))
 
-	# Regen indicator when player is nearby
+	# Status labels when player is nearby
 	var ship := _get_player_ship()
 	if ship and global_position.distance_to(ship.global_position) <= REGEN_RADIUS:
-		var regen_color := Color(0.3, 0.9, 0.4, 0.4 + pulse * 0.3)
-		draw_string(ThemeDB.fallback_font, Vector2(-30, 74), "REFUELING", HORIZONTAL_ALIGNMENT_CENTER, 64, 11, regen_color)
+		if GameState.fuel < GameState.max_fuel:
+			var regen_color := Color(0.3, 0.9, 0.4, 0.4 + pulse * 0.3)
+			draw_string(ThemeDB.fallback_font, Vector2(-30, 74), "REFUELING", HORIZONTAL_ALIGNMENT_CENTER, 64, 11, regen_color)
+		var market_color := Color(0.85, 0.75, 1.0, 0.5 + pulse * 0.3)
+		draw_string(ThemeDB.fallback_font, Vector2(-34, 90), "MARKET [E]", HORIZONTAL_ALIGNMENT_CENTER, 72, 11, market_color)
 
 
 func _make_polygon(sides: int, radius: float, offset_angle: float = 0.0) -> PackedVector2Array:

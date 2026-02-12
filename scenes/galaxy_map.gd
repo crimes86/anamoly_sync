@@ -78,22 +78,28 @@ func _draw() -> void:
 			var signal_alpha: float = data["signal_strength"]
 			if not data["explored"]:
 				signal_alpha *= 0.35
+			var family_col: Color = GameState.get_family_color(data["anomaly_family"])
 			if data["depleted"]:
-				# Red — exhausted, no syncs left
-				draw_circle(center, 6.0, Color(0.6, 0.1, 0.1, 0.8))
+				# Dimmed family color — exhausted, no syncs left
+				draw_circle(center, 6.0, Color(family_col.r * 0.4, family_col.g * 0.4, family_col.b * 0.4, 0.6))
 				draw_circle(center, 3.0, Color(0.3, 0.05, 0.05, 0.6))
 			elif data.get("player_synced", false):
-				# Blue — acquired, you've synced this one
-				draw_circle(center, 7.0, Color(0.2, 0.4, 0.9, 0.7))
-				draw_circle(center, 3.5, Color(0.3, 0.5, 1.0, 0.5))
+				# Desaturated family color — acquired, you've synced this one
+				var synced_col := family_col.lerp(Color(0.5, 0.5, 0.6), 0.5)
+				draw_circle(center, 7.0, Color(synced_col.r, synced_col.g, synced_col.b, 0.6))
+				draw_circle(center, 3.5, Color(synced_col.r, synced_col.g, synced_col.b, 0.4))
 			else:
-				# Bright green — available, not yet synced
-				var signal_color := Color(0.2, 0.9, 0.5, signal_alpha)
+				# Family color — available, not yet synced
+				var signal_color := Color(family_col.r, family_col.g, family_col.b, signal_alpha)
 				draw_circle(center, 10.0 * data["signal_strength"], signal_color)
 
 		# Player marker
 		if sector_id == player_sector:
 			draw_circle(center + Vector2(0, -18), 5.0, Color(1.0, 1.0, 1.0, 0.9))
+
+	# Draw selected sector detail panel
+	if selected_sector != "":
+		_draw_sector_detail(sectors, player_sector)
 
 	# Draw info bar at bottom
 	var info_y: float = GRID_OFFSET.y + GALAXY_HEIGHT_PX + 16
@@ -129,6 +135,95 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT and event.double_click:
 		if selected_sector != "" and selected_sector != GameState.current_sector_id:
 			_try_jump_to_sector(selected_sector)
+
+
+func _draw_sector_detail(sectors: Dictionary, player_sector: String) -> void:
+	if not sectors.has(selected_sector):
+		return
+	var data: Dictionary = sectors[selected_sector]
+
+	# Draw highlight border on selected cell
+	var sel_pos := GRID_OFFSET + Vector2(data["x"], data["y"]) * CELL_SIZE
+	var sel_rect := Rect2(sel_pos, CELL_SIZE - Vector2(4, 4))
+	draw_rect(sel_rect, Color(1.0, 1.0, 1.0, 0.7), false, 2.0)
+
+	# Panel position — right side of the grid
+	var panel_x: float = GRID_OFFSET.x + GameState.GALAXY_WIDTH * CELL_SIZE.x + 20
+	var panel_y: float = GRID_OFFSET.y
+	var line_h: float = 18.0
+	var label_color := Color(0.5, 0.55, 0.65)
+	var value_color := Color(0.85, 0.85, 0.9)
+	var y_off: float = 0.0
+
+	# Sector name
+	draw_string(ThemeDB.fallback_font, Vector2(panel_x, panel_y + y_off + 13), selected_sector, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color(1.0, 1.0, 1.0, 0.9))
+	y_off += line_h + 4
+
+	# Status line
+	var is_home: bool = selected_sector == GameState.home_sector_id
+	var is_current: bool = selected_sector == player_sector
+	var can_jump: bool = GameState.are_connected(player_sector, selected_sector) and selected_sector != player_sector
+	if is_home:
+		draw_string(ThemeDB.fallback_font, Vector2(panel_x, panel_y + y_off + 13), "HOME BASE", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color(0.9, 0.7, 0.2))
+		y_off += line_h
+	if is_current:
+		draw_string(ThemeDB.fallback_font, Vector2(panel_x, panel_y + y_off + 13), "YOU ARE HERE", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color(0.3, 0.9, 0.4))
+		y_off += line_h
+	elif can_jump:
+		draw_string(ThemeDB.fallback_font, Vector2(panel_x, panel_y + y_off + 13), "IN JUMP RANGE", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color(0.3, 0.7, 1.0))
+		y_off += line_h
+	else:
+		draw_string(ThemeDB.fallback_font, Vector2(panel_x, panel_y + y_off + 13), "OUT OF RANGE", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color(0.5, 0.5, 0.55))
+		y_off += line_h
+
+	y_off += 6
+
+	# Anomaly info
+	var family: String = data.get("anomaly_family", "")
+	if family != "":
+		var family_col: Color = GameState.get_family_color(family)
+		draw_string(ThemeDB.fallback_font, Vector2(panel_x, panel_y + y_off + 13), "Anomaly:", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, label_color)
+		draw_string(ThemeDB.fallback_font, Vector2(panel_x + 70, panel_y + y_off + 13), family, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, family_col)
+		y_off += line_h
+
+		# Sync status
+		draw_string(ThemeDB.fallback_font, Vector2(panel_x, panel_y + y_off + 13), "Status:", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, label_color)
+		var status_text: String
+		var status_color: Color
+		if data.get("depleted", false):
+			status_text = "DEPLETED"
+			status_color = Color(0.7, 0.2, 0.2)
+		elif data.get("player_synced", false):
+			status_text = "SYNCED"
+			status_color = Color(0.3, 0.5, 1.0)
+		else:
+			status_text = "AVAILABLE"
+			status_color = Color(0.3, 0.9, 0.5)
+		draw_string(ThemeDB.fallback_font, Vector2(panel_x + 70, panel_y + y_off + 13), status_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, status_color)
+		y_off += line_h
+
+		# Signal strength
+		draw_string(ThemeDB.fallback_font, Vector2(panel_x, panel_y + y_off + 13), "Signal:", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, label_color)
+		draw_string(ThemeDB.fallback_font, Vector2(panel_x + 70, panel_y + y_off + 13), "%.0f%%" % (data["signal_strength"] * 100), HORIZONTAL_ALIGNMENT_LEFT, -1, 12, value_color)
+		y_off += line_h
+
+		# Stability
+		draw_string(ThemeDB.fallback_font, Vector2(panel_x, panel_y + y_off + 13), "Stability:", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, label_color)
+		draw_string(ThemeDB.fallback_font, Vector2(panel_x + 70, panel_y + y_off + 13), "%.0f%%" % (data["stability"] * 100), HORIZONTAL_ALIGNMENT_LEFT, -1, 12, value_color)
+		y_off += line_h
+
+		# Syncs remaining (only if explored)
+		if data["explored"]:
+			draw_string(ThemeDB.fallback_font, Vector2(panel_x, panel_y + y_off + 13), "Syncs:", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, label_color)
+			draw_string(ThemeDB.fallback_font, Vector2(panel_x + 70, panel_y + y_off + 13), "%d / %d" % [data["syncs_remaining"], data["sync_pool"]], HORIZONTAL_ALIGNMENT_LEFT, -1, 12, value_color)
+			y_off += line_h
+	else:
+		draw_string(ThemeDB.fallback_font, Vector2(panel_x, panel_y + y_off + 13), "No anomaly", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color(0.4, 0.4, 0.45))
+		y_off += line_h
+
+	if not data["explored"]:
+		y_off += 6
+		draw_string(ThemeDB.fallback_font, Vector2(panel_x, panel_y + y_off + 13), "UNEXPLORED", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color(0.45, 0.45, 0.5))
 
 
 func _try_jump_to_sector(sector_id: String) -> void:

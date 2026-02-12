@@ -94,6 +94,8 @@ func _connect_signals() -> void:
 		ship.edge_jump_progress_changed.connect(_on_edge_jump_progress_changed)
 		ship.edge_jump_started.connect(_on_edge_jump_started)
 		ship.edge_jump_cancelled.connect(_on_edge_jump_cancelled)
+		# Set initial health display
+		_on_ship_health_changed(ship.health, ship.max_health)
 
 	if anomaly_node:
 		anomaly_node.anomaly_synced.connect(_on_anomaly_synced)

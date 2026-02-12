@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://codex001"]
+
+[ext_resource type="Script" path="res://ui/codex_overlay.gd" id="1_codex"]
+[ext_resource type="Script" path="res://ui/codex_panel.gd" id="2_panel"]
+
+[node name="CodexOverlay" type="CanvasLayer"]
+layer = 11
+script = ExtResource("1_codex")
+
+[node name="Panel" type="Control" parent="."]
+anchors_preset = 0
+offset_left = 40.0
+offset_top = 84.0
+offset_right = 1240.0
+offset_bottom = 690.0
+visible = false
+script = ExtResource("2_panel")
