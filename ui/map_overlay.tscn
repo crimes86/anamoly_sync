@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://oh2370tleeqq"]
+
+[ext_resource type="Script" path="res://ui/map_overlay.gd" id="1_overlay"]
+[ext_resource type="Script" path="res://ui/map_overlay_panel.gd" id="2_panel"]
+
+[node name="MapOverlay" type="CanvasLayer"]
+layer = 10
+script = ExtResource("1_overlay")
+
+[node name="Panel" type="Control" parent="."]
+anchors_preset = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 540.0
+offset_bottom = 380.0
+visible = false
+script = ExtResource("2_panel")

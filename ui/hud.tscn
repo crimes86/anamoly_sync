@@ -1,0 +1,152 @@
+[gd_scene load_steps=2 format=3 uid="uid://hud001"]
+
+[ext_resource type="Script" path="res://ui/hud.gd" id="1_hud"]
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_hud")
+
+[node name="SectorLabel" type="Label" parent="."]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 300.0
+offset_bottom = 40.0
+text = "SECTOR --"
+
+[node name="OrbitLabel" type="Label" parent="."]
+offset_left = 16.0
+offset_top = 44.0
+offset_right = 300.0
+offset_bottom = 68.0
+text = "OUT OF RANGE"
+
+[node name="FuelLabel" type="Label" parent="."]
+offset_left = 16.0
+offset_top = 72.0
+offset_right = 300.0
+offset_bottom = 96.0
+text = "FUEL 100/100"
+
+[node name="SyncBar" type="ProgressBar" parent="."]
+offset_left = 16.0
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+grow_vertical = 0
+offset_top = -48.0
+offset_right = 300.0
+offset_bottom = -16.0
+min_value = 0.0
+max_value = 100.0
+value = 0.0
+show_percentage = false
+
+[node name="SyncLabel" type="Label" parent="SyncBar"]
+layout_mode = 1
+offset_left = 0.0
+offset_top = -20.0
+offset_right = 100.0
+offset_bottom = 0.0
+text = "SYNC"
+
+[node name="HealthBar" type="ProgressBar" parent="."]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 0
+offset_left = -300.0
+offset_top = -48.0
+offset_right = -16.0
+offset_bottom = -16.0
+min_value = 0.0
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="HealthLabel" type="Label" parent="HealthBar"]
+layout_mode = 1
+offset_left = 0.0
+offset_top = -20.0
+offset_right = 100.0
+offset_bottom = 0.0
+text = "HULL"
+
+[node name="WarpBar" type="ProgressBar" parent="."]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 0
+offset_left = -300.0
+offset_top = -80.0
+offset_right = -16.0
+offset_bottom = -52.0
+min_value = 0.0
+max_value = 100.0
+value = 0.0
+show_percentage = false
+
+[node name="WarpLabel" type="Label" parent="WarpBar"]
+layout_mode = 1
+offset_left = 0.0
+offset_top = -20.0
+offset_right = 100.0
+offset_bottom = 0.0
+text = "WARP [Q]"
+
+[node name="EdgeJumpBar" type="ProgressBar" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+grow_horizontal = 2
+offset_left = -150.0
+offset_top = 40.0
+offset_right = 150.0
+offset_bottom = 60.0
+min_value = 0.0
+max_value = 100.0
+value = 0.0
+show_percentage = false
+visible = false
+
+[node name="EdgeJumpLabel" type="Label" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+grow_horizontal = 2
+offset_left = -150.0
+offset_top = 16.0
+offset_right = 150.0
+offset_bottom = 38.0
+horizontal_alignment = 1
+text = "JUMPING EAST..."
+visible = false
+
+[node name="CreditsLabel" type="Label" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+grow_horizontal = 0
+offset_left = -200.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 40.0
+horizontal_alignment = 2
+text = "0 CR"
+
+[node name="RelicPopup" type="Label" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+grow_horizontal = 2
+offset_left = -150.0
+offset_top = 100.0
+offset_right = 150.0
+offset_bottom = 130.0
+horizontal_alignment = 1
+text = "RELIC ACQUIRED"
+visible = false

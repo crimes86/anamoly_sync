@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://anomaly001"]
+
+[ext_resource type="Script" path="res://scenes/anomaly.gd" id="1_anom"]
+
+[node name="Anomaly" type="Node2D"]
+script = ExtResource("1_anom")
+
+[node name="CoreVisual" type="Polygon2D" parent="."]
+color = Color(0.6, 0.2, 1.0, 0.9)
+polygon = PackedVector2Array(0, -20, 17, -10, 17, 10, 0, 20, -17, 10, -17, -10)
+
+[node name="MidRing" type="Polygon2D" parent="."]
+color = Color(0.4, 0.15, 0.8, 0.15)
+polygon = PackedVector2Array(0, -180, 156, -90, 156, 90, 0, 180, -156, 90, -156, -90)
+
+[node name="OuterRing" type="Polygon2D" parent="."]
+color = Color(0.3, 0.1, 0.6, 0.06)
+polygon = PackedVector2Array(0, -320, 277, -160, 277, 160, 0, 320, -277, 160, -277, -160)

@@ -1,0 +1,25 @@
+[gd_scene load_steps=6 format=3 uid="uid://sector001"]
+
+[ext_resource type="Script" path="res://scenes/sector.gd" id="1_sector"]
+[ext_resource type="PackedScene" uid="uid://ship001" path="res://scenes/ship.tscn" id="2_ship"]
+[ext_resource type="PackedScene" uid="uid://anomaly001" path="res://scenes/anomaly.tscn" id="3_anomaly"]
+[ext_resource type="PackedScene" uid="uid://hud001" path="res://ui/hud.tscn" id="4_hud"]
+[ext_resource type="PackedScene" uid="uid://mapoverlay001" path="res://ui/map_overlay.tscn" id="5_map"]
+
+[node name="Sector" type="Node2D"]
+script = ExtResource("1_sector")
+
+[node name="Background" type="ColorRect" parent="."]
+offset_right = 1280.0
+offset_bottom = 720.0
+color = Color(0.02, 0.02, 0.05, 1)
+
+[node name="Anomaly" parent="." instance=ExtResource("3_anomaly")]
+position = Vector2(640, 360)
+
+[node name="Ship" parent="." instance=ExtResource("2_ship")]
+position = Vector2(200, 360)
+
+[node name="HUD" parent="." instance=ExtResource("4_hud")]
+
+[node name="MapOverlay" parent="." instance=ExtResource("5_map")]

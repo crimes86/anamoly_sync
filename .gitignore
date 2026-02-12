@@ -1,0 +1,13 @@
+# Godot 4 generated files
+.godot/
+
+# Godot import cache
+.import/
+
+# Export templates
+export_presets.cfg
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini

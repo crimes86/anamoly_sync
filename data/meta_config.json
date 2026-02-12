@@ -1,0 +1,66 @@
+{
+  "families": ["FRACTAL", "VOID", "PULSE", "DRIFT", "ECHO"],
+
+  "spotlight": {
+    "family": "FRACTAL",
+    "multiplier": 2.0
+  },
+
+  "recipes": {
+    "sync_amplifier_mk1": {
+      "name": "Sync Amplifier Mk1",
+      "description": "Increases base sync rate by 15%.",
+      "category": "ship_upgrade",
+      "ingredients": [
+        { "relic_id": "echo_fragment", "quantity": 3 },
+        { "relic_id": "pulse_spark", "quantity": 2 }
+      ],
+      "result": {
+        "type": "ship_modifier",
+        "stat": "sync_rate",
+        "value": 1.15
+      }
+    },
+    "hull_reinforcement": {
+      "name": "Hull Reinforcement",
+      "description": "Increases max health by 25.",
+      "category": "ship_upgrade",
+      "ingredients": [
+        { "relic_id": "void_membrane", "quantity": 2 },
+        { "relic_id": "drift_mote", "quantity": 4 }
+      ],
+      "result": {
+        "type": "ship_modifier",
+        "stat": "max_health",
+        "value": 25
+      }
+    },
+    "warp_stabilizer": {
+      "name": "Warp Stabilizer",
+      "description": "Reduces warp charge time by 2 seconds.",
+      "category": "ship_upgrade",
+      "ingredients": [
+        { "relic_id": "drift_anchor", "quantity": 1 },
+        { "relic_id": "fractal_shard", "quantity": 5 }
+      ],
+      "result": {
+        "type": "ship_modifier",
+        "stat": "warp_charge_time",
+        "value": -2.0
+      }
+    },
+    "vault_expansion": {
+      "name": "Vault Expansion Module",
+      "description": "Increases vault capacity by 5 slots.",
+      "category": "vault",
+      "ingredients": [
+        { "relic_id": "fractal_lattice", "quantity": 2 },
+        { "relic_id": "echo_resonator", "quantity": 2 }
+      ],
+      "result": {
+        "type": "vault_capacity",
+        "value": 5
+      }
+    }
+  }
+}

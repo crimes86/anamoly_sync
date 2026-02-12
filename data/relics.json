@@ -1,0 +1,109 @@
+{
+  "relics": {
+    "fractal_shard": {
+      "family": "FRACTAL",
+      "rarity": 1,
+      "base_power": 5,
+      "demand_multiplier": 1.0,
+      "spotlight_tags": ["geometric", "recursive"]
+    },
+    "fractal_lattice": {
+      "family": "FRACTAL",
+      "rarity": 2,
+      "base_power": 12,
+      "demand_multiplier": 1.0,
+      "spotlight_tags": ["geometric", "structural"]
+    },
+    "fractal_core": {
+      "family": "FRACTAL",
+      "rarity": 4,
+      "base_power": 30,
+      "demand_multiplier": 1.0,
+      "spotlight_tags": ["geometric", "recursive", "core"]
+    },
+    "void_wisp": {
+      "family": "VOID",
+      "rarity": 1,
+      "base_power": 4,
+      "demand_multiplier": 1.0,
+      "spotlight_tags": ["dark", "entropic"]
+    },
+    "void_membrane": {
+      "family": "VOID",
+      "rarity": 2,
+      "base_power": 10,
+      "demand_multiplier": 1.0,
+      "spotlight_tags": ["dark", "barrier"]
+    },
+    "void_singularity": {
+      "family": "VOID",
+      "rarity": 5,
+      "base_power": 50,
+      "demand_multiplier": 1.0,
+      "spotlight_tags": ["dark", "entropic", "legendary"]
+    },
+    "pulse_spark": {
+      "family": "PULSE",
+      "rarity": 1,
+      "base_power": 6,
+      "demand_multiplier": 1.0,
+      "spotlight_tags": ["energy", "kinetic"]
+    },
+    "pulse_conduit": {
+      "family": "PULSE",
+      "rarity": 2,
+      "base_power": 14,
+      "demand_multiplier": 1.0,
+      "spotlight_tags": ["energy", "transfer"]
+    },
+    "pulse_reactor": {
+      "family": "PULSE",
+      "rarity": 4,
+      "base_power": 35,
+      "demand_multiplier": 1.0,
+      "spotlight_tags": ["energy", "kinetic", "core"]
+    },
+    "drift_mote": {
+      "family": "DRIFT",
+      "rarity": 1,
+      "base_power": 3,
+      "demand_multiplier": 1.0,
+      "spotlight_tags": ["temporal", "passive"]
+    },
+    "drift_anchor": {
+      "family": "DRIFT",
+      "rarity": 3,
+      "base_power": 20,
+      "demand_multiplier": 1.0,
+      "spotlight_tags": ["temporal", "stabilizer"]
+    },
+    "drift_paradox": {
+      "family": "DRIFT",
+      "rarity": 5,
+      "base_power": 55,
+      "demand_multiplier": 1.0,
+      "spotlight_tags": ["temporal", "paradox", "legendary"]
+    },
+    "echo_fragment": {
+      "family": "ECHO",
+      "rarity": 1,
+      "base_power": 5,
+      "demand_multiplier": 1.0,
+      "spotlight_tags": ["resonant", "harmonic"]
+    },
+    "echo_resonator": {
+      "family": "ECHO",
+      "rarity": 2,
+      "base_power": 11,
+      "demand_multiplier": 1.0,
+      "spotlight_tags": ["resonant", "amplifier"]
+    },
+    "echo_cascade": {
+      "family": "ECHO",
+      "rarity": 4,
+      "base_power": 32,
+      "demand_multiplier": 1.0,
+      "spotlight_tags": ["resonant", "harmonic", "core"]
+    }
+  }
+}
